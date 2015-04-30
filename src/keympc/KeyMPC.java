@@ -39,7 +39,7 @@ public class KeyMPC {
                 public void keyPressed(KeyEvent e) {
                     try {
                         InputStream audioInputStream;
-                        
+                        //please change file location for wav files, I will upload wav files soon.
                         if (e.getKeyChar() == 'd') {
                             audioInputStream = new FileInputStream("/home/chandubaba/Desktop/play/kick.wav");
                             a[0] = new AudioStream(audioInputStream);
@@ -121,8 +121,5 @@ public class KeyMPC {
 
     }
 
-    public void playSound(File soundName) {
-
-    }
 
 }
