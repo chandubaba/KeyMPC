@@ -39,11 +39,7 @@ public class KeyMPC {
                 public void keyPressed(KeyEvent e) {
                     try {
                         InputStream audioInputStream;
-<<<<<<< HEAD
-                           
-=======
                         //please change file location for wav files, I will upload wav files soon.
->>>>>>> db38135e29ad9ddc9c4ec33f4cdd4562a3ba51ff
                         if (e.getKeyChar() == 'd') {
                             audioInputStream = new FileInputStream("audio/kick.wav");
                             a[0] = new AudioStream(audioInputStream);
@@ -115,15 +111,17 @@ public class KeyMPC {
 
     public static void main(String[] args) {
         a = new AudioStream[]{audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10};
-        SwingUtilities.invokeLater(() -> {
-            try {
-                KeyMPC keyMPC;
-                keyMPC = new KeyMPC();
-            } catch (Exception e) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    KeyMPC keyMPC;
+                    keyMPC = new KeyMPC();
+                } catch (Exception e) {
+                }
             }
-        });
-
+        }); 
     }
-
 
 }
