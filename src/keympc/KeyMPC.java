@@ -1,5 +1,6 @@
 package keympc;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -26,6 +27,8 @@ public class KeyMPC {
     
     private JButton btnRecord;
     private JLabel lblRecordTime;
+    
+    private JPanel keyboardPanel; 
 
     public KeyMPC() throws Exception {
 
@@ -35,6 +38,7 @@ public class KeyMPC {
         btnRecord = new JButton("Record");
         lblRecordTime = new JLabel("Record Time: 00:00:00");
         
+        keyboardPanel = new JPanel(new GridLayout(3, 9, 5, 3));
         JButton[] buttons = new JButton[26];
 
         for (int i = 0; i < buttons.length; i++) {
@@ -104,12 +108,12 @@ public class KeyMPC {
                 }
 
             });
-            frame.add(buttons[i]);
-        }
+            keyboardPanel.add(buttons[i]);
+        }        
 
-        JPanel contentPane = (JPanel) frame.getContentPane();
-
-        frame.setLayout(new GridLayout(3, 5, 5, 3));
+        frame.setLayout(new BorderLayout());
+        frame.add(keyboardPanel, BorderLayout.CENTER);
+        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
