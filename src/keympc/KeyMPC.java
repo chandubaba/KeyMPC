@@ -12,6 +12,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import sun.audio.AudioPlayer;
@@ -22,11 +23,18 @@ public class KeyMPC {
     String b[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
     Action[] actions = new AbstractAction[26];    
     public static AudioStream[] a;
+    
+    private JButton btnRecord;
+    private JLabel lblRecordTime;
 
     public KeyMPC() throws Exception {
 
         JFrame frame = new JFrame();
-
+        
+        // initialize button Record and label RecordTime
+        btnRecord = new JButton("Record");
+        lblRecordTime = new JLabel("Record Time: 00:00:00");
+        
         JButton[] buttons = new JButton[26];
 
         for (int i = 0; i < buttons.length; i++) {
