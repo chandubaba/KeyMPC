@@ -3,12 +3,15 @@ package keympc;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.sound.sampled.LineUnavailableException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -17,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -28,6 +32,10 @@ public class KeyMPC {
 
     private JButton btnRecord;
     private JLabel lblRecordTime;
+    private SoundRecordingUtil audioRecorder;
+    private boolean isRecording;
+    private Timer recordTimer;
+    private int seconds;
 
     private JPanel keyboardPanel;
     private JPanel recordPanel;
@@ -40,6 +48,7 @@ public class KeyMPC {
         // initialize button Record and label RecordTime
         btnRecord = new JButton("Record");
         lblRecordTime = new JLabel("Record Time: 00:00:00");
+        audioRecorder = new SoundRecordingUtil();        
 
         recordPanel = new JPanel(new FlowLayout());
         recordPanel.add(btnRecord);
@@ -123,6 +132,40 @@ public class KeyMPC {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    
+    private void startRecording() {
+        Thread recordThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    isRecording = true;
+                    btnRecord.setText("Stop");
+                    audioRecorder.start();
+                } catch (LineUnavailableException lue) {
+                    lue.printStackTrace();
+                }
+            }
+        });
+        recordThread.start();
+        seconds = 0;
+        recordTimer = new Timer(1000, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ++seconds;
+                lblRecordTime.setText("Record: " + toTimeString(seconds));
+            }
+        });
+    }    
+    
+    private String toTimeString(int secs) {
+        int hours = secs / 3600;
+        secs %= 3600;
+        int minutes = secs / 60;
+        secs %= 60;
+        return String.format("%2d:%2d:%2d", hours, minutes, secs);        
     }
 
     public static void main(String[] args) {
