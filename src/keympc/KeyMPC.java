@@ -1,6 +1,7 @@
 package keympc;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -29,6 +30,7 @@ public class KeyMPC {
     private JLabel lblRecordTime;
     
     private JPanel keyboardPanel; 
+    private JPanel recordPanel;
 
     public KeyMPC() throws Exception {
 
@@ -37,6 +39,10 @@ public class KeyMPC {
         // initialize button Record and label RecordTime
         btnRecord = new JButton("Record");
         lblRecordTime = new JLabel("Record Time: 00:00:00");
+        
+        recordPanel = new JPanel(new FlowLayout());
+        recordPanel.add(btnRecord);
+        recordPanel.add(lblRecordTime);
         
         keyboardPanel = new JPanel(new GridLayout(3, 9, 5, 3));
         JButton[] buttons = new JButton[26];
@@ -113,6 +119,7 @@ public class KeyMPC {
 
         frame.setLayout(new BorderLayout());
         frame.add(keyboardPanel, BorderLayout.CENTER);
+        frame.add(recordPanel, BorderLayout.NORTH);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
