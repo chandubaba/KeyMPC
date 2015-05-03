@@ -20,8 +20,7 @@ import sun.audio.AudioStream;
 public class KeyMPC {
 
     String b[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
-    Action[] actions = new AbstractAction[26];
-    public static AudioStream audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10;
+    Action[] actions = new AbstractAction[26];    
     public static AudioStream[] a;
 
     public KeyMPC() throws Exception {
@@ -109,8 +108,7 @@ public class KeyMPC {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        a = new AudioStream[]{audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10};
+    public static void main(String[] args) {        
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
