@@ -1,6 +1,7 @@
 package keympc;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,16 +17,21 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
 public class KeyMPC {
 
+    JFrame mainFrame;
+    
     String b[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
     Action[] actions = new AbstractAction[26];
     public static AudioStream[] a;
@@ -43,7 +49,7 @@ public class KeyMPC {
 
     public KeyMPC() throws Exception {
 
-        JFrame frame = new JFrame();
+        mainFrame = new JFrame();
 
         // initialize button Record and label RecordTime
         btnRecord = new JButton("Record");
@@ -124,14 +130,14 @@ public class KeyMPC {
             keyboardPanel.add(buttons[i]);
         }
         
-        frame.setLayout(new BorderLayout());
-        frame.add(keyboardPanel, BorderLayout.CENTER);
-        frame.add(recordPanel, BorderLayout.NORTH);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.add(keyboardPanel, BorderLayout.CENTER);
+        mainFrame.add(recordPanel, BorderLayout.NORTH);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.pack();
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
     }
     
     private void startRecording() {
@@ -166,6 +172,42 @@ public class KeyMPC {
         int minutes = secs / 60;
         secs %= 60;
         return String.format("%2d:%2d:%2d", hours, minutes, secs);        
+    }
+    
+    private void stopRecording() {
+        isRecording = false;
+        try {
+            recordTimer.stop();
+            btnRecord.setText("Record");
+            
+            mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            audioRecorder.stop();
+            mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            saveFile();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+    
+    private void saveFile() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Sound file (*.WAV)", "wav");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showSaveDialog(mainFrame);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String saveFilePath = chooser.getSelectedFile().getAbsolutePath();
+            if (!saveFilePath.toLowerCase().endsWith(".wav")) {
+                saveFilePath += ".wav";
+            }
+            File wavFile = new File(saveFilePath);
+            try {
+                audioRecorder.save(wavFile);
+                JOptionPane.showMessageDialog(mainFrame, 
+                        "Save recorded sound to:%n" + saveFilePath);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {
