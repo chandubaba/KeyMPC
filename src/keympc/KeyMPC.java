@@ -172,7 +172,7 @@ public class KeyMPC {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ++seconds;
-                lblRecordTime.setText("Record: " + toTimeString(seconds));
+                lblRecordTime.setText("Record Time: " + toTimeString(seconds));
             }
         });
         recordTimer.start();
@@ -183,7 +183,7 @@ public class KeyMPC {
         secs %= 3600;
         int minutes = secs / 60;
         secs %= 60;
-        return String.format("%2d:%2d:%2d", hours, minutes, secs);        
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);        
     }
     
     private void stopRecording() {
