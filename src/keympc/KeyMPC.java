@@ -39,7 +39,7 @@ public class KeyMPC {
     private JButton btnRecord;
     private JLabel lblRecordTime;
     private SoundRecordingUtil audioRecorder;
-    private boolean isRecording;
+    private boolean isRecording = false;
     private Timer recordTimer;
     private int seconds;
 
@@ -54,7 +54,18 @@ public class KeyMPC {
         // initialize button Record and label RecordTime
         btnRecord = new JButton("Record");
         lblRecordTime = new JLabel("Record Time: 00:00:00");
-        audioRecorder = new SoundRecordingUtil();        
+        audioRecorder = new SoundRecordingUtil();
+        btnRecord.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isRecording) {
+                    startRecording();
+                } else {
+                    stopRecording();
+                }
+            }
+        });
 
         recordPanel = new JPanel(new FlowLayout());
         recordPanel.add(btnRecord);
@@ -164,6 +175,7 @@ public class KeyMPC {
                 lblRecordTime.setText("Record: " + toTimeString(seconds));
             }
         });
+        recordTimer.start();
     }    
     
     private String toTimeString(int secs) {
@@ -203,7 +215,7 @@ public class KeyMPC {
             try {
                 audioRecorder.save(wavFile);
                 JOptionPane.showMessageDialog(mainFrame, 
-                        "Save recorded sound to:%n" + saveFilePath);
+                        "Save recorded sound to:\n" + saveFilePath);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
