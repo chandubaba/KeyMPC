@@ -113,7 +113,7 @@ public class KeyMPC {
             });
             keyboardPanel.add(buttons[i]);
         }
-
+        
         frame.setLayout(new BorderLayout());
         frame.add(keyboardPanel, BorderLayout.CENTER);
         frame.add(recordPanel, BorderLayout.NORTH);
