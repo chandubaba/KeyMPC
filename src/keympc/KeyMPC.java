@@ -56,6 +56,7 @@ public class KeyMPC {
 
                 @Override
                 public void keyPressed(KeyEvent e) {
+//                    System.out.println("pressed = " + e.getKeyChar());
                     try {
                         InputStream audioInputStream;
 
