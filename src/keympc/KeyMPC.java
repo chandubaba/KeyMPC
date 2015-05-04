@@ -92,12 +92,12 @@ public class KeyMPC {
                         InputStream audioInputStream;
 
                         if (e.getKeyChar() == 'd') {
-                            Clip kk = k[0];
-                           // kk.addLineListener(new CloseClipWhenDone());
+                            Clip kk = k[0]; //copying clip to temp Clip kk and later will close it
+                           // kk.addLineListener(new CloseClipWhenDone()); this is need for kk to close but it closes k[0] also
                             kk.start();
 
-                            System.out.println(kk.isOpen()?"ya":"no");
-                            System.out.println(k[0].isOpen()?"ya":"no");
+                            System.out.println(kk.isOpen()?"ya":"no");//check their state kk should close and k[0] should be open so that more copy can be made later
+                            System.out.println(k[0].isOpen()?"ya":"no"); //check their state.. both are open or close most of the time
                             /*audioInputStream = new FileInputStream("audio/kick.wav");
                              a[0] = new AudioStream(audioInputStream);
                              AudioPlayer.player.start(a[0]);*/
