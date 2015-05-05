@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -205,39 +206,49 @@ public class KeyMPC {
 
     private void stopRecording() {
         isRecording = false;
-        try {
-            recordTimer.stop();
-            btnRecord.setText("Record");
+        
+        recordTimer.stop();
+        btnRecord.setText("Record");
 
-            mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            audioRecorder.stop();
-            mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            // saveFile();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Thread stopRecorderThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    audioRecorder.stop();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+        });
+        stopRecorderThread.start();
+        mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        saveFile();
+
     }
 
-    /*private void saveFile() {
-     JFileChooser chooser = new JFileChooser();
-     FileNameExtensionFilter filter = new FileNameExtensionFilter("Sound file (*.WAV)", "wav");
-     chooser.setFileFilter(filter);
-     int returnVal = chooser.showSaveDialog(mainFrame);
-     if (returnVal == JFileChooser.APPROVE_OPTION) {
-     String saveFilePath = chooser.getSelectedFile().getAbsolutePath();
-     if (!saveFilePath.toLowerCase().endsWith(".wav")) {
-     saveFilePath += ".wav";
-     }
-     File wavFile = new File(saveFilePath);
-     try {
-     audioRecorder.save(wavFile);
-     JOptionPane.showMessageDialog(mainFrame,
-     "Save recorded sound to:\n" + saveFilePath);
-     } catch (IOException ioe) {
-     ioe.printStackTrace();
-     }
-     }
-     }*/
+    private void saveFile() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Sound file (*.WAV)", "wav");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showSaveDialog(mainFrame);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String saveFilePath = chooser.getSelectedFile().getAbsolutePath();
+            if (!saveFilePath.toLowerCase().endsWith(".wav")) {
+                saveFilePath += ".wav";
+            }
+            File wavFile = new File(saveFilePath);
+            try {
+                
+                audioRecorder.save(wavFile);
+                JOptionPane.showMessageDialog(mainFrame,
+                        "Save recorded sound to:\n" + saveFilePath);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+    }
     public static void main(String[] args) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         // cc=new Clips();
         k = Clips.initclips();
