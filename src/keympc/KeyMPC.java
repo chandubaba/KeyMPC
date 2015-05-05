@@ -8,11 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,7 +34,7 @@ import sun.audio.AudioStream;
 public class KeyMPC {
 
     JFrame mainFrame;
-    
+
     String b[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
     Action[] actions = new AbstractAction[26];
     public static AudioStream[] a;
@@ -46,14 +49,18 @@ public class KeyMPC {
     private JPanel keyboardPanel;
     private JPanel recordPanel;
     public static AudioStream audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10;
+    JButton[] buttons;
+    public static Clip[] k;
 
     public KeyMPC() throws Exception {
 
         mainFrame = new JFrame();
 
+        //Clips.initclips(k);
         // initialize button Record and label RecordTime
         btnRecord = new JButton("Record");
         lblRecordTime = new JLabel("Record Time: 00:00:00");
+
         audioRecorder = new SoundRecordingUtil();
         btnRecord.addActionListener(new ActionListener() {
 
@@ -72,7 +79,7 @@ public class KeyMPC {
         recordPanel.add(lblRecordTime);
 
         keyboardPanel = new JPanel(new GridLayout(3, 9, 5, 3));
-        JButton[] buttons = new JButton[26];
+        buttons = new JButton[26];
         Action[] actions = new AbstractAction[26];
 
         for (int i = 0; i < buttons.length; i++) {
@@ -82,14 +89,20 @@ public class KeyMPC {
 
                 @Override
                 public void keyPressed(KeyEvent e) {
-//                    System.out.println("pressed = " + e.getKeyChar());
+
                     try {
                         InputStream audioInputStream;
 
                         if (e.getKeyChar() == 'd') {
-                            audioInputStream = new FileInputStream("audio/kick.wav");
-                            a[0] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[0]);
+                            Clip kk = k[0]; //copying clip to temp Clip kk and later will close it
+                           // kk.addLineListener(new CloseClipWhenDone()); this is need for kk to close but it closes k[0] also
+                            kk.start();
+
+                            System.out.println(kk.isOpen()?"ya":"no");//check their state kk should close and k[0] should be open so that more copy can be made later
+                            System.out.println(k[0].isOpen()?"ya":"no"); //check their state.. both are open or close most of the time
+                            /*audioInputStream = new FileInputStream("audio/kick.wav");
+                             a[0] = new AudioStream(audioInputStream);
+                             AudioPlayer.player.start(a[0]);*/
                         } else if (e.getKeyChar() == 'e') {
                             audioInputStream = new FileInputStream("audio/snare.wav");
                             a[1] = new AudioStream(audioInputStream);
@@ -114,8 +127,11 @@ public class KeyMPC {
                             audioInputStream = new FileInputStream("audio/bhee1.wav");
                             a[6] = new AudioStream(audioInputStream);
                             AudioPlayer.player.start(a[6]);
+                        } else if (e.getKeyChar() == 'p') {
+                            audioInputStream = new FileInputStream("audio/RememberTheName.wav");
+                            a[7] = new AudioStream(audioInputStream);
+                            AudioPlayer.player.start(a[7]);
                         }
-
                         //clip = AudioSystem.getClip();
                         //clip.open(audioInputStream);
                         //clip.start();
@@ -139,18 +155,19 @@ public class KeyMPC {
 
             });
             keyboardPanel.add(buttons[i]);
+
         }
-        
+
         mainFrame.setLayout(new BorderLayout());
         mainFrame.add(keyboardPanel, BorderLayout.CENTER);
-        mainFrame.add(recordPanel, BorderLayout.NORTH);
+        mainFrame.add(recordPanel, BorderLayout.SOUTH);
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
-    
+
     private void startRecording() {
         Thread recordThread = new Thread(new Runnable() {
 
@@ -176,53 +193,55 @@ public class KeyMPC {
             }
         });
         recordTimer.start();
-    }    
-    
+    }
+
     private String toTimeString(int secs) {
         int hours = secs / 3600;
         secs %= 3600;
         int minutes = secs / 60;
         secs %= 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, secs);        
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
     }
-    
+
     private void stopRecording() {
         isRecording = false;
         try {
             recordTimer.stop();
             btnRecord.setText("Record");
-            
+
             mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             audioRecorder.stop();
             mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            saveFile();
+            // saveFile();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
-    
-    private void saveFile() {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Sound file (*.WAV)", "wav");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showSaveDialog(mainFrame);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            String saveFilePath = chooser.getSelectedFile().getAbsolutePath();
-            if (!saveFilePath.toLowerCase().endsWith(".wav")) {
-                saveFilePath += ".wav";
-            }
-            File wavFile = new File(saveFilePath);
-            try {
-                audioRecorder.save(wavFile);
-                JOptionPane.showMessageDialog(mainFrame, 
-                        "Save recorded sound to:\n" + saveFilePath);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-    }
 
-    public static void main(String[] args) {
+    /*private void saveFile() {
+     JFileChooser chooser = new JFileChooser();
+     FileNameExtensionFilter filter = new FileNameExtensionFilter("Sound file (*.WAV)", "wav");
+     chooser.setFileFilter(filter);
+     int returnVal = chooser.showSaveDialog(mainFrame);
+     if (returnVal == JFileChooser.APPROVE_OPTION) {
+     String saveFilePath = chooser.getSelectedFile().getAbsolutePath();
+     if (!saveFilePath.toLowerCase().endsWith(".wav")) {
+     saveFilePath += ".wav";
+     }
+     File wavFile = new File(saveFilePath);
+     try {
+     audioRecorder.save(wavFile);
+     JOptionPane.showMessageDialog(mainFrame,
+     "Save recorded sound to:\n" + saveFilePath);
+     } catch (IOException ioe) {
+     ioe.printStackTrace();
+     }
+     }
+     }*/
+    public static void main(String[] args) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        // cc=new Clips();
+        k = Clips.initclips();
+
         a = new AudioStream[]{audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10};
         SwingUtilities.invokeLater(new Runnable() {
 
