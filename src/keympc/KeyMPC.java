@@ -48,10 +48,13 @@ public class KeyMPC {
     private int seconds;
 
     private JPanel keyboardPanel;
-    private JPanel recordPanel;
-    public static AudioStream audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10;
+    private JPanel recordPanel;    
     JButton[] buttons;
     public static Clip[] k;
+    
+    static {
+        a = new AudioStream[10];
+    }
 
     public KeyMPC() throws Exception {
 
@@ -96,7 +99,7 @@ public class KeyMPC {
 
                         if (e.getKeyChar() == 'd') {
                             Clip kk = k[0]; //copying clip to temp Clip kk and later will close it
-                           // kk.addLineListener(new CloseClipWhenDone()); this is need for kk to close but it closes k[0] also
+                           // kk.addLineListener(new CloseClipWhenDone()); this is need for kk to close but it closes k[0] also                            
                             kk.start();
 
                             System.out.println(kk.isOpen()?"ya":"no");//check their state kk should close and k[0] should be open so that more copy can be made later
@@ -253,7 +256,6 @@ public class KeyMPC {
         // cc=new Clips();
         k = Clips.initclips();
 
-        a = new AudioStream[]{audioStream1, audioStream2, audioStream3, audioStream4, audioStream5, audioStream6, audioStream7, audioStream8, audioStream9, audioStream10};
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
