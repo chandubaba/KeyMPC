@@ -54,6 +54,15 @@ public class KeyMPC {
     
     static {
         a = new AudioStream[10];
+        try {
+            k = Clips.initclips();
+        } catch (UnsupportedAudioFileException ex) {
+            Logger.getLogger(KeyMPC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(KeyMPC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(KeyMPC.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public KeyMPC() throws Exception {
@@ -75,6 +84,7 @@ public class KeyMPC {
                 } else {
                     stopRecording();
                 }
+                mainFrame.requestFocus();
             }
         });
 
@@ -88,79 +98,79 @@ public class KeyMPC {
 
         for (int i = 0; i < buttons.length; i++) {
             buttons[i] = new JButton(b[i]);
-            buttons[i].setSize(80, 80);
-            buttons[i].addKeyListener(new KeyAdapter() {
-
-                @Override
-                public void keyPressed(KeyEvent e) {
-
-                    try {
-                        InputStream audioInputStream;
-
-                        if (e.getKeyChar() == 'd') {
-                            Clip kk = k[0]; //copying clip to temp Clip kk and later will close it
-                           // kk.addLineListener(new CloseClipWhenDone()); this is need for kk to close but it closes k[0] also                            
-                            kk.start();
-
-                            System.out.println(kk.isOpen()?"ya":"no");//check their state kk should close and k[0] should be open so that more copy can be made later
-                            System.out.println(k[0].isOpen()?"ya":"no"); //check their state.. both are open or close most of the time
-                            /*audioInputStream = new FileInputStream("audio/kick.wav");
-                             a[0] = new AudioStream(audioInputStream);
-                             AudioPlayer.player.start(a[0]);*/
-                        } else if (e.getKeyChar() == 'e') {
-                            audioInputStream = new FileInputStream("audio/snare.wav");
-                            a[1] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[1]);
-                        } else if (e.getKeyChar() == 'z') {
-                            audioInputStream = new FileInputStream("audio/bhee2.wav");
-                            a[2] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[2]);
-                        } else if (e.getKeyChar() == 'x') {
-                            audioInputStream = new FileInputStream("audio/bhee3.wav");
-                            a[3] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[3]);
-                        } else if (e.getKeyChar() == 'c') {
-                            audioInputStream = new FileInputStream("audio/bhee4.wav");
-                            a[4] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[4]);
-                        } else if (e.getKeyChar() == 'v') {
-                            audioInputStream = new FileInputStream("audio/bhee5.wav");
-                            a[5] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[5]);
-                        } else if (e.getKeyChar() == 'b') {
-                            audioInputStream = new FileInputStream("audio/bhee1.wav");
-                            a[6] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[6]);
-                        } else if (e.getKeyChar() == 'p') {
-                            audioInputStream = new FileInputStream("audio/RememberTheName.wav");
-                            a[7] = new AudioStream(audioInputStream);
-                            AudioPlayer.player.start(a[7]);
-                        }
-                        //clip = AudioSystem.getClip();
-                        //clip.open(audioInputStream);
-                        //clip.start();
-                    } catch (IOException ex) {
-                        System.out.println("Error with playing sound." + ex.toString());
-                    }
-                }
-
-                @Override
-                public void keyReleased(KeyEvent e) {
-                    if (e.getKeyChar() == 'd') {
-                        // AudioPlayer.player.stop(a[0]);
-                    }
-                    if (e.getKeyChar() == 'e') {
-                        // AudioPlayer.player.stop(a[1]);
-                    }
-                    // if (audioStream1 != null) {
-                    //  AudioPlayer.player.stop(audioStream1);
-                    // }
-                }
-
-            });
+            buttons[i].setSize(80, 80);            
             keyboardPanel.add(buttons[i]);
-
         }
+        
+        mainFrame.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                try {
+                    InputStream audioInputStream;
+
+                    if (e.getKeyChar() == 'd') {
+                        Clip kk = k[0]; //copying clip to temp Clip kk and later will close it
+                        // kk.addLineListener(new CloseClipWhenDone()); this is need for kk to close but it closes k[0] also                            
+                        kk.start();
+
+                        System.out.println(kk.isOpen() ? "ya" : "no");//check their state kk should close and k[0] should be open so that more copy can be made later
+                        System.out.println(k[0].isOpen() ? "ya" : "no"); //check their state.. both are open or close most of the time
+                            /*audioInputStream = new FileInputStream("audio/kick.wav");
+                         a[0] = new AudioStream(audioInputStream);
+                         AudioPlayer.player.start(a[0]);*/
+                    } else if (e.getKeyChar() == 'e') {
+                        audioInputStream = new FileInputStream("audio/snare.wav");
+                        a[1] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[1]);
+                    } else if (e.getKeyChar() == 'z') {
+                        audioInputStream = new FileInputStream("audio/bhee2.wav");
+                        a[2] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[2]);
+                    } else if (e.getKeyChar() == 'x') {
+                        audioInputStream = new FileInputStream("audio/bhee3.wav");
+                        a[3] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[3]);
+                    } else if (e.getKeyChar() == 'c') {
+                        audioInputStream = new FileInputStream("audio/bhee4.wav");
+                        a[4] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[4]);
+                    } else if (e.getKeyChar() == 'v') {
+                        audioInputStream = new FileInputStream("audio/bhee5.wav");
+                        a[5] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[5]);
+                    } else if (e.getKeyChar() == 'b') {
+                        audioInputStream = new FileInputStream("audio/bhee1.wav");
+                        a[6] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[6]);
+                    } else if (e.getKeyChar() == 'p') {
+                        audioInputStream = new FileInputStream("audio/RememberTheName.wav");
+                        a[7] = new AudioStream(audioInputStream);
+                        AudioPlayer.player.start(a[7]);
+                    }
+                        //clip = AudioSystem.getClip();
+                    //clip.open(audioInputStream);
+                    //clip.start();
+                } catch (IOException ex) {
+                    System.out.println("Error with playing sound." + ex.toString());
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == 'd') {
+                    // AudioPlayer.player.stop(a[0]);
+                }
+                if (e.getKeyChar() == 'e') {
+                    // AudioPlayer.player.stop(a[1]);
+                }
+                    // if (audioStream1 != null) {
+                //  AudioPlayer.player.stop(audioStream1);
+                // }
+            }
+
+        });
 
         mainFrame.setLayout(new BorderLayout());
         mainFrame.add(keyboardPanel, BorderLayout.CENTER);
@@ -168,8 +178,9 @@ public class KeyMPC {
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
-        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setLocationRelativeTo(null);        
         mainFrame.setVisible(true);
+        mainFrame.requestFocus();
     }
 
     private void startRecording() {
@@ -252,9 +263,8 @@ public class KeyMPC {
             }
         }
     }
-    public static void main(String[] args) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
-        // cc=new Clips();
-        k = Clips.initclips();
+    public static void main(String[] args) {
+        // cc=new Clips();        
 
         SwingUtilities.invokeLater(new Runnable() {
 
